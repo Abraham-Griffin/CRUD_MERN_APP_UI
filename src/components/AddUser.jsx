@@ -2,20 +2,35 @@ import React, { useState } from "react";
 import uniqid from "uniqid";
 import axios from "axios";
 import Swal from "sweetalert2";
+// import { useNavigate } from "react-router-dom";
 
 export const AddUser = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [account, setAccount] = useState("");
+  const [client, setClient] = useState("");
+  const [manager, setManager] = useState("");
+  const [team, setTeam] = useState("");
+  // const navigate = useNavigate();
 
   function addUsers() {
+    let accounts = [];
     let user = {
       name: name,
       email: email,
       password: password,
       role: role,
       userid: uniqid(),
+      accounts: [
+        {
+          accountName: account,
+          clientName: client,
+          manager: manager,
+          team: team,
+        },
+      ],
     };
     console.log(user);
 
@@ -23,6 +38,7 @@ export const AddUser = () => {
       .post("http://localhost:5000/api/user/adduser", user)
       .then((res) => {
         Swal.fire("Great", "User has been created succesfully");
+        // navigate("/userlist");
       })
       .then((err) => console.log(err));
   }
@@ -34,7 +50,7 @@ export const AddUser = () => {
           <h2 className="mt-4">Create New User</h2>
         </div>
         <div className="row text-center">
-          <div className="col-sm-6 offset-3">
+          <div className="col-sm-6 ">
             <div className="mb-3">
               <label htmlFor="name" className="form-label">
                 Role
@@ -90,11 +106,65 @@ export const AddUser = () => {
                 }}
               />
             </div>
-            <button onClick={addUsers} className="btn btn-success">
-              Save User
-            </button>
+          </div>
+          <div className="col-sm-6">
+            <div className="mb-3">
+              <label htmlFor="account" className="form-label">
+                Account Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={account}
+                onChange={(e) => {
+                  setAccount(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="client" className="form-label">
+                Client Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={client}
+                onChange={(e) => {
+                  setClient(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="manager" className="form-label">
+                Manager
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={manager}
+                onChange={(e) => {
+                  setManager(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="team" className="form-label">
+                Team
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={team}
+                onChange={(e) => {
+                  setTeam(e.target.value);
+                }}
+              />
+            </div>
           </div>
         </div>
+        <button onClick={addUsers} className="btn btn-success col-sm-4">
+          Save User
+        </button>
       </div>
     </>
   );

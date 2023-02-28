@@ -37,12 +37,18 @@ export const Login = () => {
       .post("http://localhost:5000/api/user/login-user", data)
       .then((res) => {
         console.log(res);
-        if (res.data.role == "Super") {
-          history("/userlist");
+        if (
+          res.data.role == "Super" ||
+          res.data.role == "admin" ||
+          res.data.role == "normal"
+        ) {
+          localStorage.setItem("role", res.data.role);
+          history("/userlist", {
+            state: { id: res.data.userid },
+          });
         } else if (res.data == "notexist") {
           Swal.fire("Oops", "User or Password don't match");
         }
-        console.log(res);
       })
       .then((err) => console.log(err));
   };

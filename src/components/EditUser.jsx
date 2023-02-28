@@ -8,10 +8,14 @@ export const EditUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-
+  const [account, setAccount] = useState("");
+  const [client, setClient] = useState("");
+  const [manager, setManager] = useState("");
+  const [team, setTeam] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(params);
     axios
       .post("http://localhost:5000/api/user/getuserdata", {
         userid: params.userid,
@@ -22,6 +26,10 @@ export const EditUser = () => {
         setEmail(userData.email);
         setPassword(userData.password);
         setRole(userData.role);
+        setAccount(userData.accounts[0].accountName);
+        setClient(userData.accounts[0].clientName);
+        setManager(userData.accounts[0].manager);
+        setTeam(userData.accounts[0].team);
       });
   }, []);
 
@@ -33,13 +41,21 @@ export const EditUser = () => {
       password: password,
       role: role,
       userid: params.userid,
+      accounts: [
+        {
+          accountName: account,
+          clientName: client,
+          manager: manager,
+          team: team,
+        },
+      ],
     };
     axios
       .post("http://localhost:5000/api/user/updateuser", updateUser)
       .then((res) => {
         console.log(res.data);
         alert(res.data);
-        navigate("/");
+        navigate("/userlist");
       })
       .then((err) => {
         console.log(err);
@@ -53,7 +69,7 @@ export const EditUser = () => {
           <h2 className="mt-4">Edit User</h2>
         </div>
         <div className="row text-center">
-          <div className="col-sm-6 offset-3">
+          <div className="col-sm-6">
             <div className="mb-3">
               <label htmlFor="name" className="form-label">
                 Role
@@ -110,11 +126,65 @@ export const EditUser = () => {
                 }}
               />
             </div>
-            <button onClick={editUsers} className="btn btn-success">
-              Edit User
-            </button>
+          </div>
+          <div className="col-sm-6">
+            <div className="mb-3">
+              <label htmlFor="account" className="form-label">
+                Account Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={account}
+                onChange={(e) => {
+                  setAccount(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="client" className="form-label">
+                Client Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={client}
+                onChange={(e) => {
+                  setClient(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="manager" className="form-label">
+                Manager
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={manager}
+                onChange={(e) => {
+                  setManager(e.target.value);
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="team" className="form-label">
+                Team
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={team}
+                onChange={(e) => {
+                  setTeam(e.target.value);
+                }}
+              />
+            </div>
           </div>
         </div>
+        <button onClick={editUsers} className="btn btn-success col-sm-4">
+          Edit User
+        </button>
       </div>
     </>
   );

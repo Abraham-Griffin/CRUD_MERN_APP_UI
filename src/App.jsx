@@ -3,10 +3,22 @@ import "./App.css";
 import { UserList } from "./components/UserList";
 import { AddUser } from "./components/AddUser";
 import { EditUser } from "./components/EditUser";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Login } from "./components/Login";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [isLogged, setIsLogged] = useState(false);
+  const userRole = localStorage.getItem("role");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    userRole ? setIsLogged(true) : setIsLogged(false);
+  }, []);
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
   return (
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -37,38 +49,47 @@ function App() {
                   Add User
                 </a>
               </li>
-              <li className="nav-item dropdown">
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li>
+              {!isLogged ? (
+                <li className="nav-item">
+                  <a className="nav-link" href="/">
+                    Log In
+                  </a>
+                </li>
+              ) : (
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    My Account
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a className="dropdown-item" href="userlist">
+                        User List
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" onClick={handleLogout}>
+                        Log Out
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              )}
             </ul>
           </div>
         </div>
       </nav>
-
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} exact></Route>
-          <Route path="/UserList" element={<UserList />} exact></Route>
-          <Route path="/adduser" element={<AddUser />} exact></Route>
-          <Route path="/edituser/:userid" element={<EditUser />} exact></Route>
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} exact></Route>
+        <Route path="/userlist" element={<UserList />} exact></Route>
+        <Route path="/adduser" element={<AddUser />} exact></Route>
+        <Route path="/edituser/:userid" element={<EditUser />} exact></Route>
+      </Routes>
     </div>
   );
 }
